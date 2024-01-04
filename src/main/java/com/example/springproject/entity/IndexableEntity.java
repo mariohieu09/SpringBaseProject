@@ -1,11 +1,7 @@
-package com.example.springproject.model;
+package com.example.springproject.entity;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @MappedSuperclass
 public class IndexableEntity {
