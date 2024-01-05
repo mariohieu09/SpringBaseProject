@@ -47,7 +47,9 @@ public class UserService implements IUserService {
 
     @Override
     public List<ResponseUserDto> findAll() {
-        return null;
+        return userRepository.findAll().stream()
+                .map(this::convertToDto)
+                .toList();
     }
 
     @Override
