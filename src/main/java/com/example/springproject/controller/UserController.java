@@ -2,11 +2,13 @@ package com.example.springproject.controller;
 
 import com.example.springproject.dto.RequestUserDto;
 import com.example.springproject.dto.ResponseUserDto;
+import com.example.springproject.dto.generalResponse.GeneralResponse;
 import com.example.springproject.service.impl.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -24,16 +26,26 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String createUser(@RequestBody RequestUserDto requestUserDto){
+    public GeneralResponse<ResponseUserDto> createUser(@RequestBody RequestUserDto requestUserDto){
         userService.createUser(requestUserDto);
-        return "Create user success!";
+        return GeneralResponse.<ResponseUserDto>builder()
+                .data(userService.convertToDto(userService.convertToEntity(requestUserDto)))
+                .message("Created success!")
+                .timeStamp(new Date())
+                .statusCode(200)
+                .build();
     }
 
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseUserDto getUserById(@PathVariable Long id){
-        return userService.findById(id);
+    public GeneralResponse<ResponseUserDto> getUserById(@PathVariable Long id){
+        return GeneralResponse.<ResponseUserDto>builder()
+                .data(userService.findById(id))
+                .statusCode(200)
+                .message("User")
+                .timeStamp(new Date())
+                .build();
     }
 
     @DeleteMapping("/{id}")

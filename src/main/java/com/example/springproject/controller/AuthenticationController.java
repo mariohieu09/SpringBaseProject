@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -23,13 +25,19 @@ public class AuthenticationController {
                .data(authenticationService.register(authenticationRequest))
                .message("Created success!")
                .statusCode(201)
+               .timeStamp(new Date())
                .build();
     }
 
     @PostMapping("/authenticate")
-    @ResponseStatus(HttpStatus.OK)
-    public AuthenticationResponse authenticationResponse(@RequestBody AuthenticationRequest authenticationRequest){
-        return authenticationService.authenticate(authenticationRequest);
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public GeneralResponse<BaseDTO> authenticationResponse(@RequestBody AuthenticationRequest authenticationRequest){
+        return GeneralResponse.builder()
+                .data(authenticationService.authenticate(authenticationRequest))
+                .message("Login successful!")
+                .statusCode(202)
+                .timeStamp(new Date())
+                .build();
     }
 
 
