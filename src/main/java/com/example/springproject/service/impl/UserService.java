@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +20,13 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
+
     @Override
     public void create(RequestUserDto requestDto) {
+        Optional<User> userOptional = userRepository.findByUsername(requestDto.getUsername());
+        if(userOptional.isPresent()) {
+            throw new IllegalArgumentException("Username already exists!");
+        }
         User user = this.convertToEntity(requestDto);
         user.setEncode(passwordEncoder.encode(user.getEncode()));
         userRepository.save(user);
@@ -29,7 +35,7 @@ public class UserService implements IUserService {
     @Override
     public ResponseUserDto findById(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
-        if(userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new IllegalArgumentException("Can't find the user!");
         }
         return this.convertToDto(userOptional.get());
@@ -37,12 +43,17 @@ public class UserService implements IUserService {
 
     @Override
     public void delete(RequestUserDto requestDto) {
-
+        User user = this.convertToEntity(requestDto);
+        userRepository.delete(user);
     }
 
     @Override
     public void deleteById(Long id) {
-
+        Optional<User> userOptional = userRepository.findById(id);
+        if(userOptional.isEmpty()) {
+            throw new IllegalArgumentException("Can't find the user");
+        }
+        userRepository.deleteById(id);
     }
 
     @Override
