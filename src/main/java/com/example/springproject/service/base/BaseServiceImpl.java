@@ -1,4 +1,4 @@
-package com.example.springproject.service.impl;
+package com.example.springproject.service.base;
 
 import com.example.springproject.dto.BaseDTO;
 import com.example.springproject.entity.IndexableEntity;
