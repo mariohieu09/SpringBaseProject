@@ -18,8 +18,6 @@ public class AuthenticationService extends AbstractAuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtService jwtService;
 
     @Autowired
     private AuthenticationManager authenticationManager;

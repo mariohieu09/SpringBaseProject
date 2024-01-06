@@ -2,6 +2,8 @@ package com.example.springproject.controller;
 
 import com.example.springproject.dto.AuthenticationRequest;
 import com.example.springproject.dto.AuthenticationResponse;
+import com.example.springproject.dto.BaseDTO;
+import com.example.springproject.dto.generalResponse.GeneralResponse;
 import com.example.springproject.service.impl.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,8 +18,12 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthenticationResponse register(@RequestBody AuthenticationRequest authenticationRequest){
-       return authenticationService.register(authenticationRequest);
+    public GeneralResponse<BaseDTO> register(@RequestBody AuthenticationRequest authenticationRequest){
+       return GeneralResponse.builder()
+               .data(authenticationService.register(authenticationRequest))
+               .message("Created success!")
+               .statusCode(201)
+               .build();
     }
 
     @PostMapping("/authenticate")
