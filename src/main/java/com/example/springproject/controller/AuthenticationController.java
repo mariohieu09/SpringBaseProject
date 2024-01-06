@@ -20,7 +20,11 @@ public class AuthenticationController {
        return authenticationService.register(authenticationRequest);
     }
 
-
+    @PostMapping("/authenticate")
+    @ResponseStatus(HttpStatus.OK)
+    public AuthenticationResponse authenticationResponse(@RequestBody AuthenticationRequest authenticationRequest){
+        return authenticationService.authenticate(authenticationRequest);
+    }
 
 
 }
