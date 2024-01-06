@@ -3,9 +3,12 @@ package com.example.springproject.service.impl;
 import com.example.springproject.dto.RequestUserDto;
 import com.example.springproject.dto.ResponseUserDto;
 import com.example.springproject.entity.User;
+import com.example.springproject.repository.BaseRepo;
 import com.example.springproject.repository.UserRepository;
 import com.example.springproject.service.IUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,55 +17,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
-public class UserService implements IUserService {
 
-    private final UserRepository userRepository;
+public class UserService extends BaseServiceImpl<RequestUserDto, User, ResponseUserDto>{
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public void create(RequestUserDto requestDto) {
-        Optional<User> userOptional = userRepository.findByUsername(requestDto.getUsername());
-        if(userOptional.isPresent()) {
-            throw new IllegalArgumentException("Username already exists!");
-        }
-        User user = this.convertToEntity(requestDto);
-        user.setEncode(passwordEncoder.encode(user.getEncode()));
-        userRepository.save(user);
+    public UserService(BaseRepo<User> repository) {
+        super(repository);
     }
 
-    @Override
-    public ResponseUserDto findById(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isEmpty()) {
-            throw new IllegalArgumentException("Can't find the user!");
-        }
-        return this.convertToDto(userOptional.get());
-    }
 
-    @Override
-    public void delete(RequestUserDto requestDto) {
-        User user = this.convertToEntity(requestDto);
-        userRepository.delete(user);
+    public void createUser(RequestUserDto userDto){
+        userDto.setEncodeString(passwordEncoder.encode(userDto.getEncodeString()));
+        create(userDto);
     }
-
-    @Override
-    public void deleteById(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if(userOptional.isEmpty()) {
-            throw new IllegalArgumentException("Can't find the user");
-        }
-        userRepository.deleteById(id);
-    }
-
-    @Override
-    public List<ResponseUserDto> findAll() {
-        return userRepository.findAll().stream()
-                .map(this::convertToDto)
-                .toList();
-    }
-
     @Override
     public User convertToEntity(RequestUserDto requestDto) {
         return User.builder()

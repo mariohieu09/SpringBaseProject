@@ -25,7 +25,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String createUser(@RequestBody RequestUserDto requestUserDto){
-        userService.create(requestUserDto);
+        userService.createUser(requestUserDto);
         return "Create user success!";
     }
 
