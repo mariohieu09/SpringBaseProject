@@ -1,4 +1,4 @@
 package com.example.springproject.exception;
 
-public class BaseException {
+public class BaseException extends Exception{
 }
